@@ -1,34 +1,123 @@
 {
-  "name": "config-hosts",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.3.2",
-    "@testing-library/user-event": "^7.1.2",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
-    "react-scripts": "3.3.0"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+    "name": "config-hosts",
+    "version": "0.1.0",
+    "main": "./electron-src/main.js",
+    "author": {
+        "name": "elite cheng",
+        "email": "chengtang9528@163.com"
+    },
+    "repository": "https://github.com/EliteCheng/config-hosts.git",
+    "private": true,
+    "dependencies": {
+        "bootstrap": "^4.4.1",
+        "electron-store": "^5.1.0"
+    },
+    "scripts": {
+        "react-dev": "cross-env BROWSER=none react-scripts start",
+        "react-build": "react-scripts build",
+        "react-test": "react-scripts test",
+        "react-eject": "react-scripts eject",
+        "ele-dev": "nodemon --exec \"electron .\"",
+        "wait-ele-dev": "wait-on http://localhost:3000 && yarn ele-dev",
+        "dev": "concurrently \"yarn wait-ele-dev\" \"yarn react-dev\"",
+        "build-main": "webpack --config ./webpack-conf/webpack.config.js",
+        "package-all": "yarn react-build && yarn build-main && electron-builder --dir",
+        "package": "electron-builder --dir",
+        "general-dist": "electron-builder"
+    },
+    "eslintConfig": {
+        "extends": "react-app"
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "devDependencies": {
+        "@fortawesome/fontawesome-svg-core": "^1.2.26",
+        "@fortawesome/free-brands-svg-icons": "^5.12.0",
+        "@fortawesome/free-solid-svg-icons": "^5.12.0",
+        "@fortawesome/react-fontawesome": "^0.1.8",
+        "@testing-library/jest-dom": "^4.2.4",
+        "@testing-library/react": "^9.3.2",
+        "@testing-library/user-event": "^7.1.2",
+        "axios": "^0.19.0",
+        "classnames": "^2.2.6",
+        "concurrently": "^5.0.2",
+        "cross-env": "^6.0.3",
+        "devtron": "^1.4.0",
+        "electron": "^7.1.7",
+        "electron-builder": "^21.2.0",
+        "electron-is-dev": "^1.1.0",
+        "node-sass": "^4.13.0",
+        "nodemon": "^2.0.2",
+        "prop-types": "latest",
+        "react": "^16.12.0",
+        "react-dom": "^16.12.0",
+        "react-scripts": "3.3.0",
+        "uuid": "^3.3.3",
+        "wait-on": "^3.3.0",
+        "webpack-cli": "^3.3.10"
+    },
+    "homepage": "./",
+    "build": {
+        "appId": "cloud-md",
+        "productName": "cloud doc",
+        "copyright": "Copyright © 2020 ${author}",
+        "extends": null,
+        "files": [
+            "build/**/*",
+            "settings-window/**/*",
+            "node_modules/**/*",
+            "package.json"
+        ],
+        "extraMetadata": {
+            "main": "./build/electron-src/main.js"
+        },
+        "directories": {
+            "buildResources": "assets"
+        },
+        "win": {
+            "target": [
+                "nsis"
+            ],
+            "icon": "assets/icon.ico",
+            "artifactName": "${productName}-${version}-${arch}.${ext}",
+            "publisherName": "Elite Cheng"
+        },
+        "nsis": {
+            "allowToChangeInstallationDirectory": true,
+            "oneClick": false,
+            "perMachine": false
+        },
+        "mac": {
+            "category": "public.app-category.productivity",
+            "artifactName": "${productName}-${version}-${arch}.${ext}"
+        },
+        "dmg": {
+            "background": "assets/appdmg.png",
+            "icon": "assets/icon.icns",
+            "iconSize": 100,
+            "contents": [
+                {
+                    "x": 380,
+                    "y": 280,
+                    "type": "link",
+                    "path": "/Applications"
+                },
+                {
+                    "x": 110,
+                    "y": 280,
+                    "type": "file"
+                }
+            ]
+        }
+    }
 }
