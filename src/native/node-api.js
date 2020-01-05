@@ -4,6 +4,7 @@ const {
     basename: getBasename,
     extname: getExtname,
     dirname: getDirname,
+    resolve,
 } = path
 const fs = window.require('fs').promises
 const fsSync = window.require('fs')
@@ -13,6 +14,7 @@ export {
     getBasename,
     getExtname,
     getDirname,
+    resolve,
     fs,
     fsSync
 }

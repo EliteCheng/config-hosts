@@ -3,6 +3,34 @@ const {app, shell, ipcMain} = require('electron')
 const isMac = process.platform === 'darwin'
 let menuTemplate = [
     {
+        label: '文件',
+        submenu: [{
+            label: '新建',
+            accelerator: 'CmdOrCtrl+N',
+            click: (menuItem, browserWindow, event) => {
+                browserWindow.webContents.send('create-new-file')
+            }
+        }, {
+            label: '保存',
+            accelerator: 'CmdOrCtrl+S',
+            click: (menuItem, browserWindow, event) => {
+                browserWindow.webContents.send('save-edit-file')
+            }
+        }, {
+            label: '搜索',
+            accelerator: 'CmdOrCtrl+F',
+            click: (menuItem, browserWindow, event) => {
+                browserWindow.webContents.send('search-file')
+            }
+        }, {
+            label: '导入',
+            accelerator: 'CmdOrCtrl+O',
+            click: (menuItem, browserWindow, event) => {
+                browserWindow.webContents.send('import-file')
+            }
+        }]
+    },
+    {
         label: '编辑',
         submenu: [
             {
