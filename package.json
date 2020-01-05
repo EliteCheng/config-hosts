@@ -9,15 +9,14 @@
     "repository": "https://github.com/EliteCheng/config-hosts.git",
     "private": true,
     "dependencies": {
-        "bootstrap": "^4.4.1",
         "electron-store": "^5.1.0"
     },
     "scripts": {
-        "react-dev": "cross-env BROWSER=none react-scripts start",
+        "react-dev": "react-app-rewired start",
         "react-build": "react-app-rewired build",
         "react-eject": "react-app-rewired eject",
         "ele-dev": "nodemon --exec \"electron .\"",
-        "wait-ele-dev": "wait-on http://localhost:3000 && yarn ele-dev",
+        "wait-ele-dev": "wait-on http://localhost:3166 && yarn ele-dev",
         "dev": "concurrently \"yarn wait-ele-dev\" \"yarn react-dev\"",
         "build-main": "webpack --config ./webpack-conf/webpack.config.js",
         "package-all": "yarn react-build && yarn build-main && electron-builder --dir",
@@ -40,10 +39,11 @@
         ]
     },
     "devDependencies": {
-        "@fortawesome/fontawesome-svg-core": "^1.2.26",
-        "@fortawesome/free-brands-svg-icons": "^5.12.0",
-        "@fortawesome/free-solid-svg-icons": "^5.12.0",
-        "@fortawesome/react-fontawesome": "^0.1.8",
+        "@babel/plugin-proposal-class-properties": "^7.7.0",
+        "@babel/plugin-proposal-decorators": "^7.7.0",
+        "@babel/plugin-syntax-dynamic-import": "^7.7.4",
+        "@babel/plugin-syntax-jsx": "^7.7.4",
+        "babel-plugin-import": "^1.13.0",
         "@testing-library/jest-dom": "^4.2.4",
         "@testing-library/react": "^9.3.2",
         "@testing-library/user-event": "^7.1.2",
@@ -51,7 +51,6 @@
         "axios": "^0.19.0",
         "classnames": "^2.2.6",
         "concurrently": "^5.0.2",
-        "cross-env": "^6.0.3",
         "customize-cra": "^0.9.1",
         "devtron": "^1.4.0",
         "electron": "^7.1.7",
@@ -59,7 +58,6 @@
         "electron-is-dev": "^1.1.0",
         "less": "^3.10.3",
         "less-loader": "^5.0.0",
-        "node-sass": "^4.13.0",
         "nodemon": "^2.0.2",
         "prop-types": "latest",
         "react": "^16.12.0",
@@ -70,7 +68,6 @@
         "wait-on": "^3.3.0",
         "webpack-cli": "^3.3.10"
     },
-    "homepage": "./",
     "build": {
         "appId": "cloud-md",
         "productName": "cloud doc",

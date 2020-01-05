@@ -1,6 +1,6 @@
 const {
     override, fixBabelImports, addLessLoader, useEslintRc,
-    addBabelPreset, addBabelPlugins
+    addBabelPlugins
 } = require('customize-cra');
 const {configDllPlugin} = require('./config/config-dll-plugin')
 const {configPublicPath} = require('./config/config-public-path')
@@ -41,23 +41,4 @@ module.exports = override(
         ['@babel/plugin-proposal-class-properties', {"loose": true}],
         "@babel/plugin-transform-runtime",
     ),
-    wpc => {
-        // console.debug(wpc);
-        return wpc
-    }
 )
-
-// addBabelPreset([
-//     "@babel/preset-env",
-//     {
-//         useBuiltIns: "entry",
-//         corejs: 3,
-//         targets: {
-//             edge: "13",
-//             firefox: "56",
-//             chrome: "56",
-//             safari: "11.1",
-//             ie: '11',
-//         }
-//     }
-// ]),
