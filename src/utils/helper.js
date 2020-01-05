@@ -1,6 +1,6 @@
 export const flattenArr = (arr) => {
     return arr.reduce((acc, item) => {
-        acc[item.id] = item
+        acc[item.title] = item
         return acc
     }, {})
 }

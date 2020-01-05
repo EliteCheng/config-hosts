@@ -1,6 +1,6 @@
-export default [
-    {
-        title: 'gdclaudy.com',
+export default {
+    'gdclaudy.com': {
+        id: 'gdclaudy.com',
         body: {
             'lab.tc.gdclaudy.com': {
                 ip: '125.216.242.186',
@@ -12,4 +12,4 @@ export default [
             }
         }
     }
-]
+}
