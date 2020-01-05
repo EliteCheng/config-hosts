@@ -1,6 +1,7 @@
 import {objToArr} from './helper'
 import {remote, Store} from '../native/electron-api'
 
+const hostsPath = path.resolve('C:\\Windows\\System32\\drivers\\etc\\hosts');
 const STORE_PATH = remote.app.getPath('appData')
 
 const fileStore = new Store({name: 'Files Data'})

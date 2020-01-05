@@ -1,6 +1,5 @@
 import {fs, fsSync, join} from '../native/node-api'
 import {remote} from '../native/electron-api'
-import {settingsStore} from './store'
 
 let savedLocation = settingsStore.get('savedFileLocation') || remote.app.getPath('documents')
 const fileHelper = {
