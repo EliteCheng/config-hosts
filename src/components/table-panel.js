@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import PropTypes from 'prop-types'
 import {Table} from 'antd'
-import {TableCellEditable} from "./table-cell-editable"
+import {TableCellEditable} from './table-cell-editable'
 
 TablePanel.defaultProps = {
     rowKey: 'id',
@@ -34,22 +34,34 @@ export function TablePanel(
     const getColumns = () => {
         return [
             {
-                dataIndex: 'ip', title: 'IP', align: 'center', width: 120,
+                dataIndex: 'ip', title: 'IP', width: 120,
                 render(v, record) {
                     return <TableCellEditable
                         text={v} record={record}
                         onSave={handleChange('ip')}/>
                 }
             },
-            {dataIndex: 'domain', title: '域名', align: 'center', width: 160},
-            {dataIndex: 'description', title: '用于', align: 'center', width: 200},
+            {
+                dataIndex: 'domain', title: '域名', width: 160,
+                render(v, record) {
+                    return <TableCellEditable
+                        text={v} record={record}
+                        onSave={handleChange('domain')}/>
+                }
+            },
+            {
+                dataIndex: 'description', title: '用于', width: 200,
+                render(v, record) {
+                    return <TableCellEditable
+                        text={v} record={record}
+                        onSave={handleChange('description')}/>
+                }
+            },
         ]
     }
     const getRowClassName = (record, index) => {
 
     }
-
-
     return <div className={className}>
         <Table
             rowSelection={{

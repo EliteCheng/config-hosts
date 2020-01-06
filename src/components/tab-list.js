@@ -17,7 +17,7 @@ export function TabList({configArr, activeId, unsavedIds, onTabClick, onCloseTab
                          e.preventDefault()
                          onTabClick(c.id)
                      }}>
-                    <span>{c.id}</span>
+                    <span>{c.title}</span>
                     <Icon type='close' className='ml-2 close-icon'
                           onClick={e => {
                               e.preventDefault()

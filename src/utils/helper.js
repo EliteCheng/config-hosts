@@ -14,12 +14,12 @@ export const isSameConfig = (oldConf, newConf) => {
     const newBody = newConf.body
     if (oldBody.length !== objToArr(newBody).length) return false
     return oldBody.every(c => {
-        return !!newBody[c.id] &&
+        return newBody[c.id].ip === c.ip &&
+            newBody[c.id].domain === c.domain &&
             newBody[c.id].description === c.description &&
             newBody[c.id].selected === c.selected
     })
 }
-
 
 export const timestampToString = (timestamp) => {
     const date = new Date(timestamp)

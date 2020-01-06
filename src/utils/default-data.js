@@ -1,6 +1,9 @@
+import uuidv4 from 'uuid/v4'
+
+const idx = uuidv4()
 let defaultData = {
-    'gdclaudy.com': {
-        id: 'gdclaudy.com',
+    [idx]: {
+        id: idx, title: 'gdclaudy.com',
         body: {
             '1': {
                 ip: '125.216.242.186',
@@ -17,11 +20,9 @@ let defaultData = {
         }
     }
 }
-let tmp = defaultData['gdclaudy.com']
-
+let tmp = defaultData[idx]
 Object.keys(tmp.body).forEach(k => {
-    const {ip, domain} = tmp.body[k]
-    const id = ip + domain
+    const id = uuidv4()
     tmp.body[id] = {...tmp.body[k], id}
     delete tmp.body[k]
 })

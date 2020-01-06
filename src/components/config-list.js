@@ -2,17 +2,17 @@ import React, {useEffect, useRef, useState} from 'react'
 import {Icon, Input, List, Popconfirm, Tooltip} from 'antd'
 
 import './config-list.less'
-import {KEY_CODE_MAP, useKeyPress} from "../hooks/use-key-press"
-import {ipcRenderer} from "../native/electron-api"
+import {KEY_CODE_MAP, useKeyPress} from '../hooks/use-key-press'
+import {ipcRenderer} from '../native/electron-api'
 
 function ConfigList({configArr, onItemClick, onConfigDelete, onSaveEdit, activeConfigID, configs}) {
-    const [activeDomain, setActiveDomain] = useState(false)
+    const [editingId, setEditingId] = useState(false)
     const [value, setValue] = useState('')
     const inputDom = useRef(null)
     const enterPressed = useKeyPress(KEY_CODE_MAP.enter)
     const escPressed = useKeyPress(KEY_CODE_MAP.esc)
     const closeEdit = editItem => {
-        setActiveDomain(false)
+        setEditingId(false)
         setValue('')
         //如果在编辑一个新文件的文件名
         if (editItem.isNew) {
@@ -22,13 +22,15 @@ function ConfigList({configArr, onItemClick, onConfigDelete, onSaveEdit, activeC
     }
     //search状态下键盘操作副作用
     useEffect(() => {
-        const editItem = configArr.find(c => c.id === activeDomain)
-        console.debug(enterPressed, escPressed);
-        if (enterPressed && activeDomain) {
+        const editItem = configs[editingId]
+        if (enterPressed && editingId) {
             const inputValue = value && value.trim()
-            if (inputValue && inputValue.length > 2 && (!configs[inputValue])) {
-                onSaveEdit(editItem.id, inputValue, editItem.isNew)
-                setActiveDomain(false)
+            const existed = Object.keys(configs).some(k =>
+                k !== editingId &&
+                configs[k].title === inputValue)
+            if (inputValue && inputValue.length > 2 && !existed) {
+                onSaveEdit(editingId, inputValue)
+                setEditingId(false)
                 setValue('')
             } else {
                 ipcRenderer.send('show-message-box', {
@@ -36,7 +38,7 @@ function ConfigList({configArr, onItemClick, onConfigDelete, onSaveEdit, activeC
                     message: '配置名称不合法，请重新输入'
                 })
             }
-        } else if (escPressed && activeDomain) {
+        } else if (escPressed && editingId) {
             closeEdit(editItem)
         }
     }, [enterPressed, escPressed])
@@ -44,30 +46,30 @@ function ConfigList({configArr, onItemClick, onConfigDelete, onSaveEdit, activeC
     useEffect(() => {
         const newConfig = configArr.find(f => f.isNew)
         if (newConfig) {
-            setActiveDomain(newConfig.id)
+            setEditingId(newConfig.id)
             setValue(newConfig.title)
         }
     }, [configArr])
     //重命名或者是新建文件状态下修改inputDom的focus
     useEffect(() => {
-        if (activeDomain !== false) {
+        if (editingId !== false) {
             inputDom.current.focus()
         }
-    }, [activeDomain])
+    }, [editingId])
 
     const renderItem = config => {
-        const {id, isNew} = config
+        const {id, title, isNew} = config
         let className = 'px-2 c-link'
         if (id === activeConfigID) {
             className += ' c-link-active'
         }
         return <List.Item key={id} className={className}
                           onClick={() => {
-                              if (!(id === activeDomain || isNew)) {
+                              if (!(id === editingId || isNew)) {
                                   onItemClick(id)
                               }
                           }}>
-            {(id === activeDomain || isNew) ?
+            {(id === editingId || isNew) ?
                 <div className='d-flex align-items-center' style={{width: '100%'}}>
                     <Input value={value} placeholder='请输入文件名称' ref={inputDom}
                            onChange={e => setValue(e.target.value)}/>
@@ -76,17 +78,17 @@ function ConfigList({configArr, onItemClick, onConfigDelete, onSaveEdit, activeC
                 </div> :
                 <div className='d-flex justify-content-between align-items-center'
                      style={{width: '100%', lineHeight: '16px'}}>
-                    <span>{id}</span>
+                    <span>{title}</span>
                     <div>
                         <Tooltip title='重命名' placement='left'>
                             <Icon type='edit' style={{color: '#0bd'}} className='mr-2'
                                   onClick={e => {
                                       e.stopPropagation()
-                                      setActiveDomain(id)
-                                      setValue(id)
+                                      setEditingId(id)
+                                      setValue(title)
                                   }}/>
                         </Tooltip>
-                        <Popconfirm title={`确认删除${id}配置文档吗？`}
+                        <Popconfirm title={`确认删除${title}配置文档吗？`}
                                     cancelText='否' okText='是' placement='right'
                                     onConfirm={e => {
                                         e.stopPropagation()

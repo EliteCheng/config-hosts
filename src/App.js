@@ -7,8 +7,9 @@ import {getConfigsFromStore, saveConfigsToStore} from './utils/store'
 import defaultData from './utils/default-data'
 import {SearchInput} from './components/config-search'
 import {objToArr} from './utils/helper'
-import {RightPanel} from "./components/right-panel"
-import {useIpcRenderer} from "./hooks/use-ipc-renderer"
+import {RightPanel} from './components/right-panel'
+import {useIpcRenderer} from './hooks/use-ipc-renderer'
+import uuidv4 from 'uuid/v4'
 
 function App() {
     const [configs, setConfigs] = useState(getConfigsFromStore() || defaultData)
@@ -21,10 +22,7 @@ function App() {
         if (val === null) {
             return setSearchedConfigArr(null)
         }
-        const tmpArr = configsArr.filter(c => {
-            return c.isNew ||
-                c.id.includes(val)
-        })
+        const tmpArr = configsArr.filter(c => c.title.includes(val))
         setSearchedConfigArr(tmpArr)
     }
     const configClick = id => {
@@ -34,40 +32,42 @@ function App() {
     }
     const deleteConfig = id => {
         const {[id]: _, ...afterDelete} = configs
+        if (!configs[id].isNew) {
+            //TODO: delete hosts files
+            saveConfigsToStore(afterDelete)
+            tabClose(id)
+        }
         setConfigs(afterDelete)
-        tabClose(id)
     }
-    const updateConfigName = (id, v) => {
-        const {[id]: _, ...afterDelete} = configs
-        configs[id].id = v
-        configs[id].isNew = false
-        setConfigs({...afterDelete, [v]: configs[id]})
-        if (activeConfigID === id) {
-            setActiveConfigID(v)
+    const updateConfigName = (id, title) => {
+        const modifyConfig = {...configs[id], isNew: false, title}
+        const newConfigs = {...configs, [id]: modifyConfig}
+        if (configs[id].isNew) {
+            //TODO: create hosts file
+        } else {
+            //TODO: rename hosts file
         }
-        if (openedConfigIDs.includes(id)) {
-            const newOpenIds = openedConfigIDs.filter(i => i !== id)
-            setOpenedConfigIDs([...newOpenIds, v])
-        }
+        setConfigs(newConfigs)
+        saveConfigsToStore(newConfigs)
     }
     //新建配置文件
     const createNewConfig = () => {
         if (searchedConfigArr !== null) return
         //这里只在files上添加，并没有写入持久化，因为还没有文件名。
         //写入操作在updateFileName函数中实现。
+        const newId = uuidv4()
         const newConfig = {
-            id: '___dummyId', isNew: true,
-            body: {},
+            id: newId, isNew: true,
+            body: {}, title: '',
         }
-        setConfigs({...configs, '___dummyId': newConfig})
+        setConfigs({...configs, [newId]: newConfig})
     }
 
     const tabClick = id => setActiveConfigID(id)
     const tabClose = confId => {
         const tabsWithout = openedConfigIDs.filter(id => id !== confId)
         if (tabsWithout.length > 0) {
-            const x = tabsWithout[tabsWithout.length - 1]
-            setActiveConfigID(x)
+            setActiveConfigID(tabsWithout[0])
         } else {
             setActiveConfigID('')
         }
