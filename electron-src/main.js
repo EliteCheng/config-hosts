@@ -1,5 +1,5 @@
 const path = require('path')
-const {app, ipcMain, Menu} = require('electron')
+const {app, ipcMain, Menu, dialog} = require('electron')
 const isDev = require('electron-is-dev')
 const {menuTemplate} = require('./menu-template')
 const {AppWindow} = require('./app-window')
@@ -16,6 +16,13 @@ app.on('ready', () => {
     })
     let menu = Menu.buildFromTemplate(menuTemplate)
     Menu.setApplicationMenu(menu)
+    ipcMain.on('show-message-box', (evt, data) => {
+        const {type = 'info', message, title, buttons = undefined} = data
+        dialog.showMessageBox({
+            type, title, message,
+            buttons,
+        })
+    })
     isDev && mainWindow.webContents.openDevTools()
 })
 

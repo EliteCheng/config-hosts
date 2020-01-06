@@ -4,25 +4,25 @@ import {Icon} from 'antd'
 
 import './tab-list.less'
 
-export function TabList({files, activeId, unsavedIds, onTabClick, onCloseTab}) {
+export function TabList({configArr, activeId, unsavedIds, onTabClick, onCloseTab}) {
     return <ul className='nav nav-pills tab-list-component'>
-        {files.map(f => {
-            const withUnsavedMark = unsavedIds.includes(f.id)
+        {configArr.map(c => {
+            const withUnsavedMark = unsavedIds.includes(c.id)
             let fClassName = 'c-link nav-link no-border'
-            if (f.id === activeId) fClassName += ' active'
+            if (c.id === activeId) fClassName += ' active'
             if (withUnsavedMark) fClassName += ' withUnsaved'
-            return <li className='nav-item' key={f.id}>
+            return <li className='nav-item mr-1' key={c.id}>
                 <div className={fClassName}
                      onClick={e => {
                          e.preventDefault()
-                         onTabClick(f.id)
+                         onTabClick(c.id)
                      }}>
-                    <span>{f.id}</span>
+                    <span>{c.id}</span>
                     <Icon type='close' className='ml-2 close-icon'
                           onClick={e => {
                               e.preventDefault()
                               e.stopPropagation()
-                              onCloseTab(f.id)
+                              onCloseTab(c.id)
                           }}/>
                     {withUnsavedMark &&
                     <span className='ml-2 rounded-circle unsaved-icon'/>

@@ -1,0 +1,35 @@
+.editable-cell-input {
+    display: flex;
+    align-items: center;
+}
+
+.editable-cell-input {
+    .ml-1.mr-1 {
+        color: green;
+    }
+}
+
+.editable-cell-text {
+    border: #0000 1px solid;
+    padding: 5px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    .h-icon {
+        visibility: hidden;
+    }
+    span {
+        font-size: medium;
+        margin: -2px;
+    }
+}
+
+.editable-cell-text:hover {
+    border: #009688 1px solid;
+    .h-icon {
+        visibility: visible;
+    }
+}

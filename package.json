@@ -69,8 +69,8 @@
         "webpack-cli": "^3.3.10"
     },
     "build": {
-        "appId": "cloud-md",
-        "productName": "cloud doc",
+        "appId": "config-hosts",
+        "productName": "config hosts",
         "copyright": "Copyright © 2020 ${author}",
         "extends": null,
         "files": [
