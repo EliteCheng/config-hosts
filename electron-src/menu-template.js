@@ -22,12 +22,6 @@ let menuTemplate = [
             click: (menuItem, browserWindow, event) => {
                 browserWindow.webContents.send('search-file')
             }
-        }, {
-            label: '导入',
-            accelerator: 'CmdOrCtrl+O',
-            click: (menuItem, browserWindow, event) => {
-                browserWindow.webContents.send('import-file')
-            }
         }]
     },
     {
@@ -62,16 +56,16 @@ let menuTemplate = [
             }
         ]
     },
-    {
-        label: '设置',
-        submenu: [{
-            label: 'options',
-            accelerator: 'CmdOrCtrl+,',
-            click: () => {
-                ipcMain.emit('open-settings-window')
-            }
-        }]
-    },
+    // {
+    //     label: '设置',
+    //     submenu: [{
+    //         label: 'options',
+    //         accelerator: 'CmdOrCtrl+,',
+    //         click: () => {
+    //             ipcMain.emit('open-settings-window')
+    //         }
+    //     }]
+    // },
     {
         label: '视图',
         submenu: [
@@ -125,18 +119,18 @@ let menuTemplate = [
             role: 'close'
         }]
     },
-    {
-        label: '帮助',
-        role: 'help',
-        submenu: [
-            {
-                label: '学习更多',
-                click: () => {
-                    shell.openExternal('http://electron.atom.io')
-                }
-            },
-        ]
-    },
+    // {
+    //     label: '帮助',
+    //     role: 'help',
+    //     submenu: [
+    //         {
+    //             label: '学习更多',
+    //             click: () => {
+    //                 shell.openExternal('http://electron.atom.io')
+    //             }
+    //         },
+    //     ]
+    // },
 ]
 if (isMac) {
     const name = app.getName()
@@ -179,14 +173,6 @@ if (isMac) {
                 app.quit()
             }
         }]
-    })
-} else {
-    menuTemplate[0].submenu.push({
-        label: '设置',
-        accelerator: 'Ctrl+,',
-        click: () => {
-            ipcMain.emit('open-settings-window')
-        }
     })
 }
 
