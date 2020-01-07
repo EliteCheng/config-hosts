@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import PropTypes from 'prop-types'
-import {Table} from 'antd'
+import {Button, Icon, Popconfirm, Table, Tooltip} from 'antd'
 import {TableCellEditable} from './table-cell-editable'
 
 TablePanel.defaultProps = {
@@ -21,7 +21,8 @@ export function TablePanel(
         items, rowKey, title,
         bordered, showHeader, size,
         pagination, className, rowSelectable,
-        onSelectItem, selectedRowKeys, handleItemChange
+        onSelectItem, selectedRowKeys, handleItemChange,
+        addItem, deleteItem
     }) {
 
     const handleChange = (dataIndex) => {
@@ -30,7 +31,6 @@ export function TablePanel(
             handleItemChange(dataIndex, v, record)
         }
     }
-
     const getColumns = () => {
         return [
             {
@@ -57,12 +57,32 @@ export function TablePanel(
                         onSave={handleChange('description')}/>
                 }
             },
+            {
+                dataIndex: 'op', title: '操作', width: 30, align: 'center',
+                render(v, record) {
+                    return <Popconfirm title={`确认删除该条配置吗？`}
+                                       cancelText='否' okText='是'
+                                       placement='left'
+                                       onConfirm={e => {
+                                           e.stopPropagation()
+                                           deleteItem(record.id)
+                                       }}
+                                       onCancel={e => e.stopPropagation()}>
+                        <Tooltip title='删除' placement='left'>
+                            <Icon type='delete' style={{color: 'orangered'}}
+                                  size='large'/>
+                        </Tooltip>
+                    </Popconfirm>
+                }
+            }
         ]
     }
     const getRowClassName = (record, index) => {
 
     }
+
     return <div className={className}>
+        <Button icon='plus' type='primary' onClick={addItem}>新增</Button>
         <Table
             rowSelection={{
                 onChange: onSelectItem,

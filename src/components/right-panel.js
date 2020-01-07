@@ -1,4 +1,5 @@
 import React, {useMemo, useState} from 'react'
+import uuidv4 from 'uuid/v4'
 
 import {TabList} from './tab-list'
 import {TablePanel} from './table-panel'
@@ -8,6 +9,7 @@ import './right-panel.less'
 import {getConfigsCache, saveConfigsToStore} from '../utils/store'
 import {useIpcRenderer} from '../hooks/use-ipc-renderer'
 import {saveConfigsToHosts} from '../utils/hosts-helper'
+import {Button} from 'antd'
 
 export function RightPanel(
     {
@@ -42,6 +44,26 @@ export function RightPanel(
         }
     }
 
+    const deleteItem = itemId => {
+        const newConfig = JSON.parse(JSON.stringify(activeConfig))
+        delete newConfig.body[itemId]
+        setConfigs({...configs, [newConfig.id]: newConfig})
+        handleUnsaveConfigIds(newConfig)
+    }
+    const addItem = e => {
+        const newId = uuidv4()
+        const newItem = {
+            id: newId,
+            ip: '127.0.0.1',
+            domain: 'localhost',
+            description: 'description',
+            selected: false,
+        }
+        const newConfig = JSON.parse(JSON.stringify(activeConfig))
+        newConfig.body[newId] = newItem
+        setConfigs({...configs, [newConfig.id]: newConfig})
+        handleUnsaveConfigIds(newConfig)
+    }
     const selectItem = (ids, records) => {
         let newConfig = JSON.parse(JSON.stringify(activeConfig))
         Object.keys(newConfig.body).forEach(k => {
@@ -75,6 +97,7 @@ export function RightPanel(
     useIpcRenderer({
         'save-edit-file': saveConfig,
     })
+
     return <>
         {activeConfig ?
             <>
@@ -84,6 +107,7 @@ export function RightPanel(
                          onTabClick={tabClick}
                          onCloseTab={tabClose}/>
                 <TablePanel items={objToArr(activeConfig.body)}
+                            addItem={addItem} deleteItem={deleteItem}
                             className='mx-2 mt-3' selectedRowKeys={selectedItemIds}
                             onSelectItem={selectItem} handleItemChange={handleItemChange}
                             title={() => activeConfig.title}/>
