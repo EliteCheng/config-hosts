@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 import PropTypes from 'prop-types'
 import {Button, Icon, Popconfirm, Table, Tooltip} from 'antd'
 import {TableCellEditable} from './table-cell-editable'
+import {CopyBtn} from './copy-btn'
 
 TablePanel.defaultProps = {
     rowKey: 'id',
@@ -22,7 +23,7 @@ export function TablePanel(
         bordered, showHeader, size,
         pagination, className, rowSelectable,
         onSelectItem, selectedRowKeys, handleItemChange,
-        addItem, deleteItem
+        addItem, deleteItem, onItemCopy
     }) {
 
     const handleChange = (dataIndex) => {
@@ -58,21 +59,25 @@ export function TablePanel(
                 }
             },
             {
-                dataIndex: 'op', title: '操作', width: 30, align: 'center',
+                dataIndex: 'op', title: '操作', width: 60, align: 'center',
                 render(v, record) {
-                    return <Popconfirm title={`确认删除该条配置吗？`}
-                                       cancelText='否' okText='是'
-                                       placement='left'
-                                       onConfirm={e => {
-                                           e.stopPropagation()
-                                           deleteItem(record.id)
-                                       }}
-                                       onCancel={e => e.stopPropagation()}>
-                        <Tooltip title='删除' placement='left'>
-                            <Icon type='delete' style={{color: 'orangered'}}
-                                  size='large'/>
-                        </Tooltip>
-                    </Popconfirm>
+                    return <React.Fragment>
+                        <Popconfirm title={`确认删除该条配置吗？`}
+                                    cancelText='否' okText='是'
+                                    placement='left'
+                                    onConfirm={e => {
+                                        e.stopPropagation()
+                                        deleteItem(record.id)
+                                    }}
+                                    onCancel={e => e.stopPropagation()}>
+                            <Tooltip title='删除' placement='left'>
+                                <Icon type='delete' style={{color: 'orangered'}}
+                                      size='large'/>
+                            </Tooltip>
+                        </Popconfirm>
+                        <CopyBtn className='ml-2'
+                                 onCopy={() => onItemCopy(record)}/>
+                    </React.Fragment>
                 }
             }
         ]

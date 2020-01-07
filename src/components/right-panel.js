@@ -44,6 +44,18 @@ export function RightPanel(
         }
     }
 
+    const copyItem = item => {
+        const newId = uuidv4()
+        const newItem = {
+            ...item,
+            id: newId,
+            selected: false,
+        }
+        const newConfig = JSON.parse(JSON.stringify(activeConfig))
+        newConfig.body[newId] = newItem
+        setConfigs({...configs, [newConfig.id]: newConfig})
+        handleUnsaveConfigIds(newConfig)
+    }
     const deleteItem = itemId => {
         const newConfig = JSON.parse(JSON.stringify(activeConfig))
         delete newConfig.body[itemId]
@@ -107,6 +119,7 @@ export function RightPanel(
                          onTabClick={tabClick}
                          onCloseTab={tabClose}/>
                 <TablePanel items={objToArr(activeConfig.body)}
+                            onItemCopy={copyItem}
                             addItem={addItem} deleteItem={deleteItem}
                             className='mx-2 mt-3' selectedRowKeys={selectedItemIds}
                             onSelectItem={selectItem} handleItemChange={handleItemChange}

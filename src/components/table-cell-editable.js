@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react'
-import {Icon, Input, Tooltip} from "antd"
+import {Icon, Input, Tooltip} from 'antd'
 import './table-cell-editable.less'
 
 export function TableCellEditable({text, onSave, record}) {
@@ -16,7 +16,6 @@ export function TableCellEditable({text, onSave, record}) {
     useEffect(() => {
         editing && inputDom.current.focus()
     }, [editing])
-
     return <div onClick={handleStartEditing} className='editable-cell'>
         {editing ?
             <div className='editable-cell-input'>
