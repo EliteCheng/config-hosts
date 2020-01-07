@@ -1,7 +1,5 @@
 import {fs, fsSync, join} from '../native/node-api'
-import {remote} from '../native/electron-api'
 
-let savedLocation = settingsStore.get('savedFileLocation') || remote.app.getPath('documents')
 const fileHelper = {
     readFile: path => {
         return fs.readFile(path, {encoding: 'utf8'})
@@ -27,10 +25,13 @@ const fileHelper = {
     },
     isExist: (filePath) => {
         return fsSync.existsSync(filePath)
+    },
+    copyFile: (src, dest) => {
+        return fs.copyFile(src, dest)
+        .then(() => console.log(`${src}已拷贝到${dest}`))
+        .catch(() => console.error(`${src}文件无法拷贝!`))
     }
 }
-const getFileFullPath = filename => join(savedLocation, `${filename}.md`)
 export {
     fileHelper,
-    getFileFullPath
 }

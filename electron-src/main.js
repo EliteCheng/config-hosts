@@ -25,5 +25,3 @@ app.on('ready', () => {
     })
     isDev && mainWindow.webContents.openDevTools()
 })
-
-

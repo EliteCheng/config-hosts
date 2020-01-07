@@ -1,10 +1,9 @@
 import React, {useState, useMemo} from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import {Button, Col, Row, Table} from 'antd'
+import {Button, Col, Row} from 'antd'
 
 import {ConfigList} from './components/config-list'
 import {getConfigsFromStore, saveConfigsToStore} from './utils/store'
-import defaultData from './utils/default-data'
 import {SearchInput} from './components/config-search'
 import {objToArr} from './utils/helper'
 import {RightPanel} from './components/right-panel'
@@ -12,7 +11,7 @@ import {useIpcRenderer} from './hooks/use-ipc-renderer'
 import uuidv4 from 'uuid/v4'
 
 function App() {
-    const [configs, setConfigs] = useState(getConfigsFromStore() || defaultData)
+    const [configs, setConfigs] = useState(getConfigsFromStore() || {})
     const [activeConfigID, setActiveConfigID] = useState('')
     const [openedConfigIDs, setOpenedConfigIDs] = useState([])
     const [searchedConfigArr, setSearchedConfigArr] = useState(null)
@@ -33,7 +32,6 @@ function App() {
     const deleteConfig = id => {
         const {[id]: _, ...afterDelete} = configs
         if (!configs[id].isNew) {
-            //TODO: delete hosts files
             saveConfigsToStore(afterDelete)
             tabClose(id)
         }
@@ -42,11 +40,6 @@ function App() {
     const updateConfigName = (id, title) => {
         const modifyConfig = {...configs[id], isNew: false, title}
         const newConfigs = {...configs, [id]: modifyConfig}
-        if (configs[id].isNew) {
-            //TODO: create hosts file
-        } else {
-            //TODO: rename hosts file
-        }
         setConfigs(newConfigs)
         saveConfigsToStore(newConfigs)
     }
@@ -59,6 +52,7 @@ function App() {
         const newConfig = {
             id: newId, isNew: true,
             body: {}, title: '',
+            used: false,
         }
         setConfigs({...configs, [newId]: newConfig})
     }
@@ -74,15 +68,15 @@ function App() {
         setOpenedConfigIDs(tabsWithout)
     }
 
+
     useIpcRenderer({
         'create-new-file': createNewConfig,
-        // 'save-edit-file': saveCurrentFile,
     })
     return <Row>
         <Col span={6} className='left-panel'>
             <SearchInput onSearch={configSearch}/>
             <ConfigList configArr={searchedConfigArr || configsArr}
-                        configs={configs}
+                        configs={configs} setConfigs={setConfigs}
                         activeConfigID={activeConfigID}
                         onConfigDelete={deleteConfig}
                         onSaveEdit={updateConfigName}

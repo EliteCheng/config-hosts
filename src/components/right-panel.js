@@ -5,7 +5,9 @@ import {TablePanel} from './table-panel'
 import {isSameConfig, objToArr} from '../utils/helper'
 
 import './right-panel.less'
-import {getConfigsCache} from '../utils/store'
+import {getConfigsCache, saveConfigsToStore} from '../utils/store'
+import {useIpcRenderer} from '../hooks/use-ipc-renderer'
+import {saveConfigsToHosts} from '../utils/hosts-helper'
 
 export function RightPanel(
     {
@@ -59,6 +61,20 @@ export function RightPanel(
         handleUnsaveConfigIds(newConfig)
     }
 
+    const saveConfig = () => {
+        // 如果文件没有修改就不做任何操作。
+        if (!unsavedConfigIDs.includes(activeConfigID)) return
+        // 更新未保存的文件ID列表
+        setUnsavedConfigIDs(unsavedConfigIDs.filter(id => id !== activeConfigID))
+        // 如果启用了该配置，则从新写一次hosts文件
+        if (activeConfig.used) {
+            saveConfigsToStore(configs)
+            saveConfigsToHosts(configs)
+        }
+    }
+    useIpcRenderer({
+        'save-edit-file': saveConfig,
+    })
     return <>
         {activeConfig ?
             <>

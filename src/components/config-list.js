@@ -1,16 +1,97 @@
 import React, {useEffect, useRef, useState} from 'react'
-import {Icon, Input, List, Popconfirm, Tooltip} from 'antd'
+import {Icon, Input, List, Popconfirm, Switch, Tooltip} from 'antd'
 
 import './config-list.less'
 import {KEY_CODE_MAP, useKeyPress} from '../hooks/use-key-press'
 import {ipcRenderer} from '../native/electron-api'
+import {saveConfigsToStore} from '../utils/store'
+import {saveConfigsToHosts} from '../utils/hosts-helper'
 
-function ConfigList({configArr, onItemClick, onConfigDelete, onSaveEdit, activeConfigID, configs}) {
+function ConfigItem(
+    {
+        config, onConfigDelete,
+        activeConfigID, onItemClick,
+        editingId, setEditingId, closeEdit,
+        inputDom, value, setValue,
+        setUsed,
+    }) {
+    const {id, title, isNew, used} = config
+    let className = 'px-2 c-link'
+    if (id === activeConfigID) {
+        className += ' c-link-active'
+    }
+    return <List.Item key={id} className={className}
+                      onClick={() => {
+                          if (!(id === editingId || isNew)) {
+                              onItemClick(id)
+                          }
+                      }}>
+        {(id === editingId || isNew) ?
+            <div className='d-flex align-items-center' style={{width: '100%'}}>
+                <Input value={value} placeholder='请输入文件名称' ref={inputDom}
+                       onChange={e => setValue(e.target.value)}/>
+                <Icon type='close' className='ml-2' style={{color: 'orangered'}}
+                      onClick={() => closeEdit(config)}/>
+            </div> :
+            <div className='d-flex justify-content-between align-items-center'
+                 style={{width: '100%', lineHeight: '16px'}}>
+                <span>{title}</span>
+                <div className={'d-flex align-items-center'}>
+                    <Tooltip title={used ? '禁用配置' : '启用配置'}>
+                        <Switch size='small' className='mr-2' checked={used}
+                                onChange={(used, evt) => {
+                                    evt.stopPropagation()
+                                    setUsed(config, used)
+                                }}/>
+                    </Tooltip>
+                    <Tooltip title='重命名' placement='left'>
+                        <Icon type='edit' style={{color: '#0bd'}} className='mr-2'
+                              onClick={e => {
+                                  e.stopPropagation()
+                                  setEditingId(id)
+                                  setValue(title)
+                              }}/>
+                    </Tooltip>
+                    <Popconfirm title={`确认删除${title}配置文档吗？`}
+                                cancelText='否' okText='是' placement='right'
+                                onConfirm={e => {
+                                    e.stopPropagation()
+                                    onConfigDelete(id)
+                                }}
+                                onCancel={e => e.stopPropagation()}>
+                        <Tooltip title='删除' placement='right'>
+                            <Icon type='delete' style={{color: 'orangered'}}
+                                  onClick={e => e.stopPropagation()}/>
+                        </Tooltip>
+                    </Popconfirm>
+                </div>
+            </div>
+        }
+    </List.Item>
+}
+
+let tick = null
+export function ConfigList(
+    {
+        configArr, onItemClick, onConfigDelete, onSaveEdit, activeConfigID,
+        configs, setConfigs
+    }) {
     const [editingId, setEditingId] = useState(false)
     const [value, setValue] = useState('')
     const inputDom = useRef(null)
     const enterPressed = useKeyPress(KEY_CODE_MAP.enter)
     const escPressed = useKeyPress(KEY_CODE_MAP.esc)
+
+    const handleUsedChange = ({id}, used) => {
+        configs[id].used = used
+        const newConfigs = JSON.parse(JSON.stringify(configs))
+        setConfigs(newConfigs)
+        saveConfigsToStore(newConfigs)
+        clearTimeout(tick)
+        tick = setTimeout(() => {
+            saveConfigsToHosts(newConfigs)
+        }, 1000)
+    }
     const closeEdit = editItem => {
         setEditingId(false)
         setValue('')
@@ -57,59 +138,12 @@ function ConfigList({configArr, onItemClick, onConfigDelete, onSaveEdit, activeC
         }
     }, [editingId])
 
-    const renderItem = config => {
-        const {id, title, isNew} = config
-        let className = 'px-2 c-link'
-        if (id === activeConfigID) {
-            className += ' c-link-active'
-        }
-        return <List.Item key={id} className={className}
-                          onClick={() => {
-                              if (!(id === editingId || isNew)) {
-                                  onItemClick(id)
-                              }
-                          }}>
-            {(id === editingId || isNew) ?
-                <div className='d-flex align-items-center' style={{width: '100%'}}>
-                    <Input value={value} placeholder='请输入文件名称' ref={inputDom}
-                           onChange={e => setValue(e.target.value)}/>
-                    <Icon type='close' className='ml-2' style={{color: 'orangered'}}
-                          onClick={() => closeEdit(config)}/>
-                </div> :
-                <div className='d-flex justify-content-between align-items-center'
-                     style={{width: '100%', lineHeight: '16px'}}>
-                    <span>{title}</span>
-                    <div>
-                        <Tooltip title='重命名' placement='left'>
-                            <Icon type='edit' style={{color: '#0bd'}} className='mr-2'
-                                  onClick={e => {
-                                      e.stopPropagation()
-                                      setEditingId(id)
-                                      setValue(title)
-                                  }}/>
-                        </Tooltip>
-                        <Popconfirm title={`确认删除${title}配置文档吗？`}
-                                    cancelText='否' okText='是' placement='right'
-                                    onConfirm={e => {
-                                        e.stopPropagation()
-                                        onConfigDelete(id)
-                                    }}
-                                    onCancel={e => e.stopPropagation()}>
-                            <Tooltip title='删除' placement='right'>
-                                <Icon type='delete' style={{color: 'orangered'}}
-                                      onClick={e => e.stopPropagation()}/>
-                            </Tooltip>
-                        </Popconfirm>
-                    </div>
-                </div>
-            }
-        </List.Item>
-    }
-    return <List style={{height: 'calc(100vh - 37px)'}}
+    return <List style={{height: 'calc(100vh - 50px)'}}
                  dataSource={configArr}
-                 renderItem={renderItem}/>
-}
-
-export {
-    ConfigList
+                 renderItem={c =>
+                     <ConfigItem config={c} activeConfigID={activeConfigID}
+                                 editingId={editingId} setEditingId={setEditingId}
+                                 inputDom={inputDom} value={value} setValue={setValue}
+                                 onConfigDelete={onConfigDelete} onItemClick={onItemClick}
+                                 closeEdit={closeEdit} setUsed={handleUsedChange}/>}/>
 }
