@@ -3,7 +3,7 @@ const configDllPlugin = () => {
     return webpackConfig => {
         //配置devtool 的source-map选项
         // webpackConfig.devtool = 'cheap-module-eval-source-map'
-        webpackConfig.devtool = isDev ? 'cheap-module-source-map' : null
+        webpackConfig.devtool = isDev ? 'cheap-module-source-map' : ''
         if (!isDev) {
             webpackConfig['optimization'].splitChunks = {
                 chunks: 'all',
