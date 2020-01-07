@@ -88,9 +88,9 @@ export function RightPanel(
         if (!unsavedConfigIDs.includes(activeConfigID)) return
         // 更新未保存的文件ID列表
         setUnsavedConfigIDs(unsavedConfigIDs.filter(id => id !== activeConfigID))
+        saveConfigsToStore(configs)
         // 如果启用了该配置，则从新写一次hosts文件
         if (activeConfig.used) {
-            saveConfigsToStore(configs)
             saveConfigsToHosts(configs)
         }
     }

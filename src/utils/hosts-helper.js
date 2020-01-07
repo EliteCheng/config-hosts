@@ -31,7 +31,7 @@ export function saveConfigsToHosts(configs) {
         })
     })
     if (configStr.length > '#======\r\n'.length) {
-        configStr += `#Idea 破解需要\r\n0.0.0.0 account.jetbrains.com\r\n`
+        // configStr += `#Idea 破解需要\r\n0.0.0.0 account.jetbrains.com\r\n`
         fileHelper.writeFile(HOSTS_PATH, configStr)
     }
     console.info('saveConfigsToHosts', HOSTS_PATH)
