@@ -1,6 +1,6 @@
 {
     "name": "config-hosts",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "main": "./electron-src/main.js",
     "author": {
         "name": "elite cheng",
@@ -20,6 +20,7 @@
         "dev": "concurrently \"yarn wait-ele-dev\" \"yarn react-dev\"",
         "build-main": "webpack --config ./webpack-conf/webpack.config.js",
         "package-all": "yarn react-build && yarn build-main && electron-builder --dir",
+        "release": "electron-builder",
         "package": "electron-builder --dir",
         "general-dist": "electron-builder"
     },
@@ -102,6 +103,9 @@
             "category": "public.app-category.productivity",
             "artifactName": "${productName}-${version}-${arch}.${ext}"
         },
+        "publish": [
+            "github"
+        ],
         "dmg": {
             "background": "assets/appdmg.png",
             "icon": "assets/icon.icns",
