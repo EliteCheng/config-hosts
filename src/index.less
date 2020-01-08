@@ -41,14 +41,18 @@ code {
     border-radius: 0 !important;
 }
 
-
-
 .left-panel {
     height: 100vh;
     position: relative !important;
 }
 
-.bottom-button {
+.bottom-button-group {
     position: absolute !important;
     bottom: 0;
+    display: flex;
+    button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 }

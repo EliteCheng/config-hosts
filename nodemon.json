@@ -13,7 +13,6 @@
         "./electron-src/main.js",
         "./electron-src/menu-template.js"
     ],
-    "delay": 1000,
     "env": {
         "NODE_ENV": "development"
     },

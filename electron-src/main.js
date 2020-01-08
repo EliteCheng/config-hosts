@@ -28,19 +28,30 @@ app.on('ready', () => {
         const {title, content} = data
         dialog.showErrorBox(title, content)
     })
-    ipcMain.on('show-open-dialog', (evt, data) => {
-        const {sender, prevetDefault} = evt
-        const {
-            title = '', defaultPath = '', buttonLabel,
-            filters = [
-                {name: 'hosts', extensions: ['*', 'doc']},
-            ],
-            properties = ['openFile']
-        } = data
-        dialog.showOpenDialog({
-            title, defaultPath, buttonLabel,
-            filters, properties
-        }).then(({canceled, filePaths}) => {
+    ipcMain.on('export-config', async (evt, data) => {
+        const {canceled, filePath} = await dialog.showSaveDialog({
+            title: '选择保存hosts config的路径',
+            defaultPath: path.join(app.getPath('desktop'), 'config-hosts.json'),
+            filters: [{name: 'json', extensions: ['json']}],
         })
+        if (!canceled) {
+            mainWindow.webContents.send('export-config', {
+                path: filePath,
+            })
+        }
+    })
+    ipcMain.on('import-config', async (evt, data) => {
+        const {canceled, filePaths} = await dialog.showOpenDialog({
+            title: '选择导入hosts config的json文件',
+            defaultPath: app.getPath('desktop'),
+            filters: [{name: 'json', extensions: ['json']}],
+            properties: ['openFile']
+        })
+        if (!canceled) {
+            mainWindow.webContents.send('import-config', {
+                path: filePaths[0]
+            })
+        }
     })
 })
+

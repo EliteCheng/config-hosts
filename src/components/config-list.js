@@ -1,11 +1,11 @@
 import React, {useEffect, useRef, useState} from 'react'
-import {Icon, Input, List, Popconfirm, Switch, Tooltip} from 'antd'
+import {Icon, Input, message, List, Popconfirm, Switch, Tooltip} from 'antd'
 
 import './config-list.less'
 import {KEY_CODE_MAP, useKeyPress} from '../hooks/use-key-press'
-import {ipcRenderer} from '../native/electron-api'
 import {saveConfigsToStore} from '../utils/store'
 import {saveConfigsToHosts} from '../utils/hosts-helper'
+import {debounce} from "../utils/helper"
 
 function ConfigItem(
     {
@@ -70,7 +70,11 @@ function ConfigItem(
     </List.Item>
 }
 
-let tick = null
+const debounceSave = debounce((newConfigs) => {
+    saveConfigsToStore(newConfigs)
+    saveConfigsToHosts(newConfigs)
+}, 1000)
+
 export function ConfigList(
     {
         configArr, onItemClick, onConfigDelete, onSaveEdit, activeConfigID,
@@ -81,16 +85,11 @@ export function ConfigList(
     const inputDom = useRef(null)
     const enterPressed = useKeyPress(KEY_CODE_MAP.enter)
     const escPressed = useKeyPress(KEY_CODE_MAP.esc)
-
     const handleUsedChange = ({id}, used) => {
         configs[id].used = used
         const newConfigs = JSON.parse(JSON.stringify(configs))
         setConfigs(newConfigs)
-        saveConfigsToStore(newConfigs)
-        clearTimeout(tick)
-        tick = setTimeout(() => {
-            saveConfigsToHosts(newConfigs)
-        }, 1000)
+        debounceSave(newConfigs)
     }
     const closeEdit = editItem => {
         setEditingId(false)
@@ -114,10 +113,7 @@ export function ConfigList(
                 setEditingId(false)
                 setValue('')
             } else {
-                ipcRenderer.send('show-message-box', {
-                    title: '错误',
-                    message: '配置名称不合法，请重新输入'
-                })
+                message.error('配置名称不合法，请重新输入![至少3个字符，名称不能重复]')
             }
         } else if (escPressed && editingId) {
             closeEdit(editItem)

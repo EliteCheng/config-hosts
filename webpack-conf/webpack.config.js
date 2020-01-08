@@ -10,5 +10,4 @@ module.exports = {
     node: {
         __dirname: false,//将__dirname设置成一个绝对路径
     }
-
 }

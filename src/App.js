@@ -9,9 +9,10 @@ import {objToArr} from './utils/helper'
 import {RightPanel} from './components/right-panel'
 import {useIpcRenderer} from './hooks/use-ipc-renderer'
 import uuidv4 from 'uuid/v4'
+import {saveConfigsToHosts} from "./utils/hosts-helper"
+import {ipcRenderer} from "./native/electron-api"
 
-function App() {
-    const [configs, setConfigs] = useState(getConfigsFromStore() || {})
+function App({configs, setConfigs}) {
     const [activeConfigID, setActiveConfigID] = useState('')
     const [openedConfigIDs, setOpenedConfigIDs] = useState([])
     const [searchedConfigArr, setSearchedConfigArr] = useState(null)
@@ -33,6 +34,7 @@ function App() {
         const {[id]: _, ...afterDelete} = configs
         if (!configs[id].isNew) {
             saveConfigsToStore(afterDelete)
+            saveConfigsToHosts(afterDelete)
             tabClose(id)
         }
         setConfigs(afterDelete)
@@ -68,7 +70,6 @@ function App() {
         setOpenedConfigIDs(tabsWithout)
     }
 
-
     useIpcRenderer({
         'create-new-file': createNewConfig,
     })
@@ -81,8 +82,14 @@ function App() {
                         onConfigDelete={deleteConfig}
                         onSaveEdit={updateConfigName}
                         onItemClick={configClick}/>
-            <Button size='large' type='primary' icon='plus' className='bottom-button'
-                    onClick={createNewConfig} block>新建</Button>
+            <div className='bottom-button-group'>
+                <Button size='large' type='primary' icon='plus' className='no-border'
+                        onClick={createNewConfig} style={{width: 'calc(25vw - 176px)'}}>新建</Button>
+                <Button size='large' type='warning' icon='import' className='no-border'
+                        onClick={() => ipcRenderer.send('import-config')}>导入</Button>
+                <Button size='large' type='default' icon='export' className='no-border'
+                        onClick={() => ipcRenderer.send('export-config')}>导出</Button>
+            </div>
         </Col>
         <Col span={18} className='right-panel'>
             <RightPanel configs={configs} setConfigs={setConfigs}

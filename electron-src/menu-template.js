@@ -1,5 +1,6 @@
 const {resolve} = require('path')
 const {app, shell, ipcMain} = require('electron')
+const isDev = require('electron-is-dev')
 
 const HOSTS_PATH = resolve(`C:\\Windows\\System32\\drivers\\etc\\hosts`)
 const isMac = process.platform === 'darwin'
@@ -65,7 +66,13 @@ let menuTemplate = [
                 label: '导出配置',
                 accelerator: 'Shift+CmdOrCtrl+O',
                 click(item, focusWin) {
-                    ipcMain.emit('output')
+                    ipcMain.emit('export-config')
+                }
+            }, {
+                label: '导入配置',
+                accelerator: 'Shift+CmdOrCtrl+I',
+                click() {
+                    ipcMain.emit('import-config')
                 }
             }
         ]
@@ -94,20 +101,6 @@ let menuTemplate = [
                         focusedWindow.setFullScreen(!focusedWindow.isFullScreen())
                 }
             },
-            {
-                label: '切换开发者工具',
-                accelerator: (function () {
-                    if (isMac)
-                        return 'Alt+Command+I'
-                    else
-                        return 'F12'
-                    // return 'Ctrl+Shift+I';
-                })(),
-                click: (item, focusedWindow) => {
-                    if (focusedWindow)
-                        focusedWindow.toggleDevTools()
-                }
-            },
         ]
     },
     {
@@ -124,7 +117,22 @@ let menuTemplate = [
         }]
     },
 ]
-
+if (isDev) {
+    menuTemplate[2].submenu.push({
+        label: '切换开发者工具',
+        accelerator: (function () {
+            if (isMac)
+                return 'Alt+Command+I'
+            else
+                return 'F12'
+            // return 'Ctrl+Shift+I';
+        })(),
+        click: (item, focusedWindow) => {
+            if (focusedWindow)
+                focusedWindow.toggleDevTools()
+        }
+    })
+}
 module.exports = {
     menuTemplate,
 }

@@ -20,17 +20,19 @@ export function saveConfigsToHosts(configs) {
         fileHelper.copyFile(cachePath, HOSTS_PATH)
         return
     }
-    let configStr = `#======\r\n`
+    let configStr = ''
     usedConfigArr.forEach(c => {
+        configStr += `# ${c.title}\r\n`
         objToArr(c.body).forEach(({ip, domain, selected, description}) => {
-            let k = `${ip} ${domain}`
+            let k = `${ip}\t${domain}`
             if (selected && !(hasConfig[k])) {
-                configStr += `#${description}\r\n${k}\r\n`
+                configStr += `${k}\t# ${description}\r\n`
                 hasConfig[k] = true
             }
         })
+        configStr += '\r\n'
     })
-    if (configStr.length > '#======\r\n'.length) {
+    if (configStr.length > 0) {
         // configStr += `#Idea 破解需要\r\n0.0.0.0 account.jetbrains.com\r\n`
         fileHelper.writeFile(HOSTS_PATH, configStr)
         .then(() => console.info('saveConfigsToHosts success'))
