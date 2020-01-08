@@ -20,7 +20,7 @@
         "dev": "concurrently \"yarn wait-ele-dev\" \"yarn react-dev\"",
         "build-main": "webpack --config ./webpack-conf/webpack.config.js",
         "package-all": "yarn react-build && yarn build-main && electron-builder --dir",
-        "release": "cross-env GH_TOKEN=4a9b164dd05b2848a8a4f993bbac41487c952765 electron-builder",
+        "release": "cross-env GH_TOKEN=65b08636ccdd9a643f4d4d74e235199ef81c548f electron-builder",
         "package": "electron-builder --dir",
         "general-dist": "electron-builder"
     },
