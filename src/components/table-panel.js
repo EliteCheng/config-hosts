@@ -26,6 +26,16 @@ export function TablePanel(
         addItem, deleteItem, onItemCopy
     }) {
 
+    const [adding, setAdding] = useState(false)
+
+    const handleAdd = e => {
+        e.stopPropagation()
+        setAdding(true)
+        setTimeout(() => {
+            addItem()
+            setAdding(false)
+        }, 696)
+    }
     const handleChange = (dataIndex) => {
         return (v, record) => {
             //TODO:判断字段是否合法
@@ -86,8 +96,9 @@ export function TablePanel(
 
     }
 
-    return <div className={className}>
-        <Button icon='plus' type='primary' onClick={addItem}>新增</Button>
+    return <div className={className} style={{maxHeight: 'calc(100vh - 72px)', overflow: 'auto'}}>
+        <Button icon='plus' type='primary' loading={adding}
+                onClick={handleAdd}>新增</Button>
         <Table
             rowSelection={{
                 onChange: onSelectItem,

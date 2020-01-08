@@ -11,6 +11,7 @@ app.on('ready', () => {
     const urlLocation = isDev ? `http://${HOST}:${PORT}` :
         `file://${path.join(__dirname, '../index.html')}`
     let mainWindow = new AppWindow({}, urlLocation)
+    isDev && mainWindow.webContents.openDevTools()
     mainWindow.on('closed', () => {
         mainWindow = null
     })
@@ -18,10 +19,28 @@ app.on('ready', () => {
     Menu.setApplicationMenu(menu)
     ipcMain.on('show-message-box', (evt, data) => {
         const {type = 'info', message, title, buttons = undefined} = data
-        dialog.showMessageBox({
+        return dialog.showMessageBox({
             type, title, message,
             buttons,
         })
     })
-    isDev && mainWindow.webContents.openDevTools()
+    ipcMain.on('show-error-box', (evt, data) => {
+        const {title, content} = data
+        dialog.showErrorBox(title, content)
+    })
+    ipcMain.on('show-open-dialog', (evt, data) => {
+        const {sender, prevetDefault} = evt
+        const {
+            title = '', defaultPath = '', buttonLabel,
+            filters = [
+                {name: 'hosts', extensions: ['*', 'doc']},
+            ],
+            properties = ['openFile']
+        } = data
+        dialog.showOpenDialog({
+            title, defaultPath, buttonLabel,
+            filters, properties
+        }).then(({canceled, filePaths}) => {
+        })
+    })
 })

@@ -1,6 +1,6 @@
 const path = require('path')
 const HOST = 'localhost'
-const PORT = 3166
+const PORT = 6166
 /**
  *  basePath路径为当前项目根路径/
  */

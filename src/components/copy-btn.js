@@ -9,7 +9,7 @@ export function CopyBtn({style, className, onCopy}) {
         setTimeout(() => {
             onCopy()
             setCopied(false)
-        }, 1600)
+        }, 696)
     }
     return <span style={style} className={className}>
         {!copied && <Tooltip title='复制'>

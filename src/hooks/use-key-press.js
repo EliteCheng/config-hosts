@@ -1,4 +1,5 @@
 import {useEffect, useState} from 'react'
+import {debounce} from "../utils/helper"
 
 export const KEY_CODE_MAP = {
     enter: 13,
@@ -9,16 +10,16 @@ export function useKeyPress(targetKeyCode) {
     const [keyPressed, setKeyPressed] = useState(false)
 
     useEffect(() => {
-        const keyDownHandler = ({keyCode}) => {
+        const keyDownHandler = debounce(({keyCode}) => {
             if (keyCode === targetKeyCode) {
                 setKeyPressed(true)
             }
-        }
-        const keyUpHandler = ({keyCode}) => {
+        })
+        const keyUpHandler = debounce(({keyCode}) => {
             if (keyCode === targetKeyCode) {
                 setKeyPressed(false)
             }
-        }
+        })
         document.addEventListener('keyup', keyUpHandler)
         document.addEventListener('keydown', keyDownHandler)
         return () => {

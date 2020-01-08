@@ -1,5 +1,7 @@
+const {resolve} = require('path')
 const {app, shell, ipcMain} = require('electron')
 
+const HOSTS_PATH = resolve(`C:\\Windows\\System32\\drivers\\etc\\hosts`)
 const isMac = process.platform === 'darwin'
 let menuTemplate = [
     {
@@ -21,6 +23,12 @@ let menuTemplate = [
             accelerator: 'CmdOrCtrl+F',
             click: (menuItem, browserWindow, event) => {
                 browserWindow.webContents.send('search-file')
+            }
+        }, {
+            label: '查看Hosts文件',
+            accelerator: 'CmdOrCtrl+H',
+            click() {
+                shell.openItem(HOSTS_PATH)
             }
         }]
     },
@@ -53,19 +61,15 @@ let menuTemplate = [
                 label: '全选',
                 accelerator: 'CmdOrCtrl+A',
                 role: 'selectall'
+            }, {
+                label: '导出配置',
+                accelerator: 'Shift+CmdOrCtrl+O',
+                click(item, focusWin) {
+                    ipcMain.emit('output')
+                }
             }
         ]
     },
-    // {
-    //     label: '设置',
-    //     submenu: [{
-    //         label: 'options',
-    //         accelerator: 'CmdOrCtrl+,',
-    //         click: () => {
-    //             ipcMain.emit('open-settings-window')
-    //         }
-    //     }]
-    // },
     {
         label: '视图',
         submenu: [
@@ -119,62 +123,7 @@ let menuTemplate = [
             role: 'close'
         }]
     },
-    // {
-    //     label: '帮助',
-    //     role: 'help',
-    //     submenu: [
-    //         {
-    //             label: '学习更多',
-    //             click: () => {
-    //                 shell.openExternal('http://electron.atom.io')
-    //             }
-    //         },
-    //     ]
-    // },
 ]
-if (isMac) {
-    const name = app.getName()
-    menuTemplate.unshift({
-        label: name,
-        submenu: [{
-            label: `关于 ${name}`,
-            role: 'about'
-        }, {
-            type: 'separator'
-        }, {
-            label: '设置',
-            accelerator: 'Command+,',
-            click: () => {
-                ipcMain.emit('open-settings-window')
-            }
-        }, {
-            label: '服务',
-            role: 'services',
-            submenu: []
-        }, {
-            type: 'separator'
-        }, {
-            label: `隐藏 ${name}`,
-            accelerator: 'Command+H',
-            role: 'hide'
-        }, {
-            label: '隐藏其它',
-            accelerator: 'Command+Alt+H',
-            role: 'hideothers'
-        }, {
-            label: '显示全部',
-            role: 'unhide'
-        }, {
-            type: 'separator'
-        }, {
-            label: '退出',
-            accelerator: 'Command+Q',
-            click: () => {
-                app.quit()
-            }
-        }]
-    })
-}
 
 module.exports = {
     menuTemplate,

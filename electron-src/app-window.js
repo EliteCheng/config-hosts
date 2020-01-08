@@ -13,10 +13,10 @@ class AppWindow extends BrowserWindow {
         }
         const finalConfig = {...basicConfig, ...config}
         super(finalConfig)
-        this.loadURL(urlLocation)
         this.once('ready-to-show', () => {
             this.show()
         })
+        this.loadURL(urlLocation).then()
     }
 }
 
