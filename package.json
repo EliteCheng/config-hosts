@@ -108,7 +108,7 @@
             "github"
         ],
         "dmg": {
-            "background": "assets/appdmg.png",
+            "background": "assets/icon.png",
             "icon": "assets/icon.png",
             "iconSize": 100,
             "contents": [
