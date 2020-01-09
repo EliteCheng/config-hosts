@@ -91,7 +91,7 @@
             "target": [
                 "nsis"
             ],
-            "icon": "assets/icon.ico",
+            "icon": "assets/icon.png",
             "artifactName": "${productName}-${version}-${arch}.${ext}",
             "publisherName": "Elite Cheng"
         },
@@ -109,7 +109,7 @@
         ],
         "dmg": {
             "background": "assets/appdmg.png",
-            "icon": "assets/icon.icns",
+            "icon": "assets/icon.png",
             "iconSize": 100,
             "contents": [
                 {
