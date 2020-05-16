@@ -68,8 +68,8 @@ function App({configs, setConfigs}) {
     }
 
     const tabClick = id => setActiveConfigID(id)
-    const tabClose = confId => {
-        const tabsWithout = openedConfigIDs.filter(id => id !== confId)
+    const tabClose = confIds => {
+        const tabsWithout = openedConfigIDs.filter(id => !confIds.includes(id))
         if (tabsWithout.length > 0) {
             setActiveConfigID(tabsWithout[0])
         } else {

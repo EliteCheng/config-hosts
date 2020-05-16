@@ -9,7 +9,6 @@ import './right-panel.less'
 import {getConfigsCache, saveConfigsToStore} from '../utils/store'
 import {useIpcRenderer} from '../hooks/use-ipc-renderer'
 import {saveConfigsToHosts} from '../utils/hosts-helper'
-import {Button} from 'antd'
 
 export function RightPanel(
     {
