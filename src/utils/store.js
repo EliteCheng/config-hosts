@@ -1,10 +1,10 @@
 import {remote, Store} from '../native/electron-api'
-import {flattenArr, objToArr} from "./helper"
-import {saveConfigsToHosts} from "./hosts-helper"
+import {path} from '../native/node-api'
+import {flattenArr, objToArr} from './helper'
 
-const STORE_PATH = remote.app.getPath('appData')
-
-const hostsConfigsStore = new Store({name: 'Hosts Config Data'})
+const STORE_PATH = path.join(remote.app.getPath('appData'), 'config-hosts')
+console.debug(STORE_PATH)
+const hostsConfigsStore = new Store({name: 'Hosts-Config-Data'})
 const HOST_CONFIG_STORE_KEY = 'hostsConfigs'
 
 const getConfigsFromStore = () => {

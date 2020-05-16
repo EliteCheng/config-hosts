@@ -3,8 +3,31 @@ import PropTypes from 'prop-types'
 import {Icon} from 'antd'
 
 import './tab-list.less'
+import {useContextMenu} from '../hooks/use-context-menu'
 
 export function TabList({configArr, activeId, unsavedIds, onTabClick, onCloseTab}) {
+    // const clickedItem = useContextMenu([
+    //     {
+    //         label: '关闭其他',
+    //         click: () => {
+    //             const parentElement = getParentNode(clickedItem.current, 'file-item')
+    //             if (parentElement) {
+    //                 const {id, title} = parentElement.dataset
+    //                 setEditStatus(id)
+    //                 setValue(title)
+    //             }
+    //         }
+    //     },
+    //     {
+    //         label: '关闭所有',
+    //         click: () => {
+    //             const parentElement = getParentNode(clickedItem.current, 'file-item')
+    //             if (parentElement) {
+    //                 onFileDelete(parentElement.dataset.id)
+    //             }
+    //         }
+    //     }
+    // ], '.file-list', [configArr])
     return <ul className='nav nav-pills tab-list-component'>
         {configArr.map(c => {
             const withUnsavedMark = unsavedIds.includes(c.id)

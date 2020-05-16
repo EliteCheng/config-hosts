@@ -1,11 +1,11 @@
 import React, {useEffect, useRef, useState} from 'react'
-import {Icon, Input, message, List, Popconfirm, Switch, Tooltip} from 'antd'
+import {Icon, Input, List, message, Popconfirm, Switch, Tooltip} from 'antd'
 
 import './config-list.less'
 import {KEY_CODE_MAP, useKeyPress} from '../hooks/use-key-press'
 import {saveConfigsToStore} from '../utils/store'
 import {saveConfigsToHosts} from '../utils/hosts-helper'
-import {debounce} from "../utils/helper"
+import {debounce} from '../utils/helper'
 
 function ConfigItem(
     {
@@ -134,12 +134,14 @@ export function ConfigList(
         }
     }, [editingId])
 
-    return <List style={{height: 'calc(100vh - 50px)'}}
+    return <List style={{maxHeight: 'calc(100vh - 90px)', overflow: 'auto'}}
                  dataSource={configArr}
                  renderItem={c =>
                      <ConfigItem config={c} activeConfigID={activeConfigID}
                                  editingId={editingId} setEditingId={setEditingId}
                                  inputDom={inputDom} value={value} setValue={setValue}
                                  onConfigDelete={onConfigDelete} onItemClick={onItemClick}
-                                 closeEdit={closeEdit} setUsed={handleUsedChange}/>}/>
+                                 closeEdit={closeEdit} setUsed={handleUsedChange}/>
+                 }
+    />
 }

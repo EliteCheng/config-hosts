@@ -1,16 +1,16 @@
-import React, {useState, useMemo} from 'react'
+import React, {useMemo, useState} from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import {Button, Col, Row} from 'antd'
+import {Button, Col, Modal, Row} from 'antd'
 
 import {ConfigList} from './components/config-list'
-import {getConfigsFromStore, saveConfigsToStore} from './utils/store'
+import {saveConfigsToStore} from './utils/store'
 import {SearchInput} from './components/config-search'
 import {objToArr} from './utils/helper'
 import {RightPanel} from './components/right-panel'
 import {useIpcRenderer} from './hooks/use-ipc-renderer'
 import uuidv4 from 'uuid/v4'
-import {saveConfigsToHosts} from "./utils/hosts-helper"
-import {ipcRenderer} from "./native/electron-api"
+import {saveConfigsToHosts} from './utils/hosts-helper'
+import {ipcRenderer} from './native/electron-api'
 
 function App({configs, setConfigs}) {
     const [activeConfigID, setActiveConfigID] = useState('')
@@ -48,6 +48,14 @@ function App({configs, setConfigs}) {
     //新建配置文件
     const createNewConfig = () => {
         if (searchedConfigArr !== null) return
+        if (configsArr.some(c => c.isNew === true)) {
+            Modal.warn({
+                title: '创建新的配置文件',
+                content: `当前有未完成创建的配置文件，请先完成！！`,
+                centered: true,
+            })
+            return
+        }
         //这里只在files上添加，并没有写入持久化，因为还没有文件名。
         //写入操作在updateFileName函数中实现。
         const newId = uuidv4()

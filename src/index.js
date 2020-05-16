@@ -4,11 +4,11 @@ import {Modal} from 'antd'
 
 import './index.less'
 import App from './App'
-import {useIpcRenderer} from "./hooks/use-ipc-renderer"
-import {fileHelper} from "./utils/file-helper"
-import {getConfigsFromStore, mergeConfigs, saveConfigsToStore} from "./utils/store"
-import {ipcRenderer, shell} from "./native/electron-api"
-import {saveConfigsToHosts} from "./utils/hosts-helper"
+import {useIpcRenderer} from './hooks/use-ipc-renderer'
+import {fileHelper} from './utils/file-helper'
+import {getConfigsFromStore, mergeConfigs, saveConfigsToStore} from './utils/store'
+import {shell} from './native/electron-api'
+import {saveConfigsToHosts} from './utils/hosts-helper'
 
 // window.console.warn = () => {}
 function Index() {
@@ -54,7 +54,7 @@ function Index() {
             onOk() {
                 shell.openItem(path)
             }
-        });
+        })
     }
 
     useIpcRenderer({

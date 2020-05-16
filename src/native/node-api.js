@@ -16,5 +16,6 @@ export {
     getDirname,
     resolve,
     fs,
-    fsSync
+    fsSync,
+    path
 }
