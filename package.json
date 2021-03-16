@@ -93,12 +93,13 @@
             ],
             "icon": "assets/icon.png",
             "artifactName": "${productName}-${version}-${arch}.${ext}",
+            "requestedExecutionLevel": "requireAdministrator",
             "publisherName": "Elite Cheng"
         },
         "nsis": {
             "allowToChangeInstallationDirectory": true,
             "oneClick": false,
-            "perMachine": false
+            "perMachine": true
         },
         "mac": {
             "category": "public.app-category.productivity",
