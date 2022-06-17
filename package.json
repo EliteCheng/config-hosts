@@ -55,7 +55,7 @@
         "cross-env": "^6.0.3",
         "customize-cra": "^0.9.1",
         "devtron": "^1.4.0",
-        "electron": "^7.1.7",
+        "electron": "^15.5.5",
         "electron-builder": "^21.2.0",
         "electron-is-dev": "^1.1.0",
         "less": "^3.10.3",
